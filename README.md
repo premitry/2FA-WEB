@@ -1,5 +1,7 @@
 # 2FA Vault
 
+**English** · [Bahasa Indonesia](README.id.md)
+
 A privacy-first **TOTP / 2FA code generator** that runs on Cloudflare Workers.
 Think Google Authenticator / Authy, but as a single-page web app you can self-host
 on the free Workers tier.
