@@ -1,0 +1,17 @@
+{
+  "name": "2fa-vault",
+  "version": "1.0.0",
+  "description": "A privacy-first TOTP / 2FA code generator running on Cloudflare Workers. Secrets stay in the browser; share via fragment links the server can't read.",
+  "private": true,
+  "type": "module",
+  "main": "src/worker.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail"
+  },
+  "devDependencies": {
+    "wrangler": "^3.80.0"
+  },
+  "license": "MIT"
+}

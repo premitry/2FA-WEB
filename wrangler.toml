@@ -1,0 +1,13 @@
+name = "2fa-vault"
+main = "src/worker.js"
+compatibility_date = "2024-11-01"
+
+# Optional: bind a custom domain or workers.dev route via the dashboard,
+# or uncomment a `routes` block below.
+#
+# [[routes]]
+# pattern = "2fa.example.com/*"
+# zone_name = "example.com"
+
+[observability]
+enabled = true
