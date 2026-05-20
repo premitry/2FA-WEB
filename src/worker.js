@@ -224,6 +224,27 @@ const HTML = `<!DOCTYPE html>
   .btn-icon { padding: .55rem; }
   .btn svg { width: 16px; height: 16px; }
 
+  /* Language switcher */
+  .lang-switcher {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: .55rem .55rem .55rem .65rem;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: .85rem;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='%2394a3b8'><path d='M3 4.5l3 3 3-3z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right .35rem center;
+    padding-right: 1.5rem;
+  }
+  .lang-switcher:hover { border-color: var(--accent); }
+  .lang-switcher:focus { outline: none; border-color: var(--accent); }
+
   /* Dialog */
   dialog {
     background: var(--bg-elevated);
@@ -365,9 +386,13 @@ const HTML = `<!DOCTYPE html>
     <span>2FA Vault</span>
   </div>
   <div class="header-actions">
+    <select id="langSwitcher" class="lang-switcher" data-i18n-attr="aria-label:aria.lang">
+      <option value="en">EN</option>
+      <option value="id">ID</option>
+    </select>
     <button id="addBtn" class="btn btn-primary">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-      <span>Add</span>
+      <span data-i18n="app.add">Add</span>
     </button>
   </div>
 </header>
@@ -376,46 +401,50 @@ const HTML = `<!DOCTYPE html>
 
 <div id="emptyState" class="empty" hidden>
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
-  <h2>No 2FA entries yet</h2>
-  <p>Add one manually, paste an <code>otpauth://</code> URI,<br>or import from a shared link.</p>
+  <h2 data-i18n="app.empty.title">No 2FA entries yet</h2>
+  <p data-i18n="app.empty.desc">Add one manually, paste an otpauth:// URI, or import from a shared link.</p>
   <button id="addBtnEmpty" class="btn btn-primary">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-    <span>Add your first entry</span>
+    <span data-i18n="app.empty.cta">Add your first entry</span>
   </button>
 </div>
 
 <footer>
-  <p>Your secrets never leave your browser. <a href="https://datatracker.ietf.org/doc/html/rfc6238" target="_blank" rel="noopener">RFC 6238</a> TOTP &middot; running on Cloudflare Workers.</p>
+  <p>
+    <span data-i18n="app.footer">Your secrets never leave your browser.</span>
+    <a href="https://datatracker.ietf.org/doc/html/rfc6238" target="_blank" rel="noopener">RFC 6238</a>
+    <span data-i18n="app.footer.tech">TOTP &middot; running on Cloudflare Workers.</span>
+  </p>
 </footer>
 
 <!-- Add/Edit dialog -->
 <dialog id="addDialog">
   <div class="dialog-body">
-    <h2 id="addDialogTitle">Add 2FA Entry</h2>
+    <h2 id="addDialogTitle" data-i18n="dialog.add.title">Add 2FA Entry</h2>
     <div class="tabs" role="tablist">
-      <button type="button" data-tab="manual" class="active" role="tab">Manual</button>
-      <button type="button" data-tab="uri" role="tab">otpauth URI</button>
+      <button type="button" data-tab="manual" class="active" role="tab" data-i18n="tab.manual">Manual</button>
+      <button type="button" data-tab="uri" role="tab" data-i18n="tab.uri">otpauth URI</button>
     </div>
 
     <form id="addForm">
       <div data-tab-panel="manual">
         <div class="field">
-          <label for="issuer">Issuer / Service</label>
+          <label for="issuer" data-i18n="field.issuer">Issuer / Service</label>
           <input id="issuer" type="text" placeholder="Google, GitHub, ..." autocomplete="off">
         </div>
         <div class="field">
-          <label for="account">Account name</label>
+          <label for="account" data-i18n="field.account">Account name</label>
           <input id="account" type="text" placeholder="user@example.com" autocomplete="off">
         </div>
         <div class="field">
-          <label for="secret">Secret key (Base32)</label>
+          <label for="secret" data-i18n="field.secret">Secret key (Base32)</label>
           <input id="secret" type="text" placeholder="JBSWY3DPEHPK3PXP" autocomplete="off" spellcheck="false">
         </div>
         <details>
-          <summary>Advanced options</summary>
+          <summary data-i18n="field.advanced">Advanced options</summary>
           <div class="field-row">
             <div class="field">
-              <label for="digits">Digits</label>
+              <label for="digits" data-i18n="field.digits">Digits</label>
               <select id="digits">
                 <option value="6" selected>6</option>
                 <option value="7">7</option>
@@ -423,12 +452,12 @@ const HTML = `<!DOCTYPE html>
               </select>
             </div>
             <div class="field">
-              <label for="period">Period (s)</label>
+              <label for="period" data-i18n="field.period">Period (s)</label>
               <input id="period" type="number" min="10" max="120" value="30">
             </div>
           </div>
           <div class="field">
-            <label for="algorithm">Algorithm</label>
+            <label for="algorithm" data-i18n="field.algorithm">Algorithm</label>
             <select id="algorithm">
               <option value="SHA-1" selected>SHA1</option>
               <option value="SHA-256">SHA256</option>
@@ -440,50 +469,49 @@ const HTML = `<!DOCTYPE html>
 
       <div data-tab-panel="uri" hidden>
         <div class="field">
-          <label for="uri">Paste otpauth:// URI</label>
+          <label for="uri" data-i18n="field.uri">Paste otpauth:// URI</label>
           <textarea id="uri" placeholder="otpauth://totp/Example:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=Example" autocomplete="off" spellcheck="false"></textarea>
         </div>
       </div>
     </form>
   </div>
   <div class="dialog-actions">
-    <button type="button" class="btn" data-close>Cancel</button>
-    <button type="button" id="saveBtn" class="btn btn-primary">Save</button>
+    <button type="button" class="btn" data-close data-i18n="btn.cancel">Cancel</button>
+    <button type="button" id="saveBtn" class="btn btn-primary" data-i18n="btn.save">Save</button>
   </div>
 </dialog>
 
 <!-- Import dialog (when opening a shared link) -->
 <dialog id="importDialog">
   <div class="dialog-body">
-    <h2>Import shared 2FA entry</h2>
-    <p style="margin: 0 0 1rem; color: var(--text-dim); font-size: .9rem;">
+    <h2 data-i18n="dialog.import.title">Import shared 2FA entry</h2>
+    <p style="margin: 0 0 1rem; color: var(--text-dim); font-size: .9rem;" data-i18n="dialog.import.desc">
       Someone shared a 2FA entry with you via a link. The secret was decoded
       locally in your browser.
     </p>
     <div id="importPreview"></div>
   </div>
   <div class="dialog-actions">
-    <button type="button" class="btn" data-close>Discard</button>
-    <button type="button" id="importBtn" class="btn btn-primary">Add to my vault</button>
+    <button type="button" class="btn" data-close data-i18n="btn.discard">Discard</button>
+    <button type="button" id="importBtn" class="btn btn-primary" data-i18n="btn.import">Add to my vault</button>
   </div>
 </dialog>
 
 <!-- Share dialog -->
 <dialog id="shareDialog">
   <div class="dialog-body">
-    <h2>Shareable link</h2>
+    <h2 data-i18n="dialog.share.title">Shareable link</h2>
     <div class="privacy-note">
-      <strong>Privacy:</strong> the secret is encoded after the <code>#</code> in
-      the URL. By HTTP spec, fragments are <strong>never sent to the server</strong> &mdash;
-      this Worker, Cloudflare, and any proxy in between cannot read it.
+      <strong data-i18n="dialog.share.privacy.label">Privacy:</strong>
+      <span data-i18n="dialog.share.privacy.desc">the secret is encoded after the # in the URL. By HTTP spec, fragments are never sent to the server &mdash; this Worker, Cloudflare, and any proxy in between cannot read it.</span>
     </div>
     <div id="shareLink" class="share-link"></div>
   </div>
   <div class="dialog-actions">
-    <button type="button" class="btn" data-close>Close</button>
+    <button type="button" class="btn" data-close data-i18n="btn.close">Close</button>
     <button type="button" id="copyShareBtn" class="btn btn-primary">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-      Copy link
+      <span data-i18n="btn.copylink">Copy link</span>
     </button>
   </div>
 </dialog>
@@ -493,6 +521,185 @@ const HTML = `<!DOCTYPE html>
 <script>
 (() => {
 'use strict';
+
+// ============================================================
+// i18n (English + Bahasa Indonesia)
+// ============================================================
+const LOCALES = {
+  en: {
+    'app.add': 'Add',
+    'app.empty.title': 'No 2FA entries yet',
+    'app.empty.desc': 'Add one manually, paste an otpauth:// URI, or import from a shared link.',
+    'app.empty.cta': 'Add your first entry',
+    'app.footer': 'Your secrets never leave your browser.',
+    'app.footer.tech': 'TOTP \u00b7 running on Cloudflare Workers.',
+    'dialog.add.title': 'Add 2FA Entry',
+    'dialog.edit.title': 'Edit 2FA Entry',
+    'tab.manual': 'Manual',
+    'tab.uri': 'otpauth URI',
+    'field.issuer': 'Issuer / Service',
+    'field.account': 'Account name',
+    'field.secret': 'Secret key (Base32)',
+    'field.advanced': 'Advanced options',
+    'field.digits': 'Digits',
+    'field.period': 'Period (s)',
+    'field.algorithm': 'Algorithm',
+    'field.uri': 'Paste otpauth:// URI',
+    'btn.cancel': 'Cancel',
+    'btn.save': 'Save',
+    'btn.discard': 'Discard',
+    'btn.import': 'Add to my vault',
+    'btn.close': 'Close',
+    'btn.copylink': 'Copy link',
+    'dialog.import.title': 'Import shared 2FA entry',
+    'dialog.import.desc': 'Someone shared a 2FA entry with you via a link. The secret was decoded locally in your browser.',
+    'dialog.share.title': 'Shareable link',
+    'dialog.share.privacy.label': 'Privacy:',
+    'dialog.share.privacy.desc': 'the secret is encoded after the # in the URL. By HTTP spec, fragments are never sent to the server \u2014 this Worker, Cloudflare, and any proxy in between cannot read it.',
+    'menu.share': 'Share via link',
+    'menu.otpauth': 'Copy otpauth URI',
+    'menu.edit': 'Edit',
+    'menu.delete': 'Delete',
+    'aria.copyCode': 'Copy code for {0}',
+    'aria.moreActions': 'More actions',
+    'aria.lang': 'Language',
+    'code.hint': 'Click to copy',
+    'code.copied': 'Copied!',
+    'code.invalid': 'invalid secret',
+    'untitled': 'Untitled',
+    'unknown': 'Unknown',
+    'confirm.delete': 'Delete "{0}"?',
+    'meta.format': '{0} \u00b7 {1} digits \u00b7 {2}s',
+    'toast.codeCopied': 'Code copied to clipboard',
+    'toast.copyFailed': 'Could not copy',
+    'toast.uriCopied': 'otpauth URI copied',
+    'toast.linkCopied': 'Share link copied',
+    'toast.entryAdded': 'Entry added',
+    'toast.entryUpdated': 'Entry updated',
+    'toast.entryDeleted': 'Entry deleted',
+    'toast.entryImported': 'Entry imported',
+    'toast.alreadyInVault': 'Already in your vault',
+    'toast.invalidShareLink': 'Invalid share link',
+    'toast.invalidOtpauth': 'Invalid otpauth link: {0}',
+    'err.secretRequired': 'Secret is required',
+    'err.secretEmpty': 'Secret is empty',
+    'err.secretTooShort': 'Secret too short (need at least 80 bits)',
+    'err.secretMustBeString': 'Secret must be a string',
+    'err.invalidBase32': 'Invalid Base32 character: {0}',
+    'err.notOtpauth': 'Not an otpauth:// URI',
+    'err.invalidProtocol': 'Invalid protocol',
+    'err.onlyTotp': 'Only TOTP is supported (got {0})',
+    'err.missingSecret': 'Missing secret',
+    'err.pasteUri': 'Paste an otpauth:// URI',
+  },
+  id: {
+    'app.add': 'Tambah',
+    'app.empty.title': 'Belum ada entry 2FA',
+    'app.empty.desc': 'Tambahkan secara manual, paste URI otpauth://, atau import dari link yang dibagikan.',
+    'app.empty.cta': 'Tambah entry pertama',
+    'app.footer': 'Secret kamu tidak pernah keluar dari browser.',
+    'app.footer.tech': 'TOTP \u00b7 berjalan di Cloudflare Workers.',
+    'dialog.add.title': 'Tambah Entry 2FA',
+    'dialog.edit.title': 'Edit Entry 2FA',
+    'tab.manual': 'Manual',
+    'tab.uri': 'URI otpauth',
+    'field.issuer': 'Issuer / Layanan',
+    'field.account': 'Nama akun',
+    'field.secret': 'Secret key (Base32)',
+    'field.advanced': 'Opsi lanjutan',
+    'field.digits': 'Jumlah digit',
+    'field.period': 'Periode (detik)',
+    'field.algorithm': 'Algoritma',
+    'field.uri': 'Paste URI otpauth://',
+    'btn.cancel': 'Batal',
+    'btn.save': 'Simpan',
+    'btn.discard': 'Buang',
+    'btn.import': 'Tambah ke vault saya',
+    'btn.close': 'Tutup',
+    'btn.copylink': 'Salin link',
+    'dialog.import.title': 'Import entry 2FA dari link',
+    'dialog.import.desc': 'Seseorang membagikan entry 2FA padamu lewat link. Secret-nya didecode lokal di browsermu.',
+    'dialog.share.title': 'Link untuk dibagikan',
+    'dialog.share.privacy.label': 'Privasi:',
+    'dialog.share.privacy.desc': 'secret di-encode setelah tanda # di URL. Sesuai spec HTTP, fragment tidak pernah dikirim ke server \u2014 Worker ini, Cloudflare, maupun proxy mana pun tidak bisa membacanya.',
+    'menu.share': 'Bagikan lewat link',
+    'menu.otpauth': 'Salin URI otpauth',
+    'menu.edit': 'Edit',
+    'menu.delete': 'Hapus',
+    'aria.copyCode': 'Salin kode untuk {0}',
+    'aria.moreActions': 'Aksi lainnya',
+    'aria.lang': 'Bahasa',
+    'code.hint': 'Klik untuk menyalin',
+    'code.copied': 'Tersalin!',
+    'code.invalid': 'secret tidak valid',
+    'untitled': 'Tanpa nama',
+    'unknown': 'Tidak diketahui',
+    'confirm.delete': 'Hapus "{0}"?',
+    'meta.format': '{0} \u00b7 {1} digit \u00b7 {2}d',
+    'toast.codeCopied': 'Kode tersalin ke clipboard',
+    'toast.copyFailed': 'Gagal menyalin',
+    'toast.uriCopied': 'URI otpauth tersalin',
+    'toast.linkCopied': 'Link tersalin',
+    'toast.entryAdded': 'Entry ditambahkan',
+    'toast.entryUpdated': 'Entry diperbarui',
+    'toast.entryDeleted': 'Entry dihapus',
+    'toast.entryImported': 'Entry berhasil diimport',
+    'toast.alreadyInVault': 'Sudah ada di vault',
+    'toast.invalidShareLink': 'Link share tidak valid',
+    'toast.invalidOtpauth': 'Link otpauth tidak valid: {0}',
+    'err.secretRequired': 'Secret wajib diisi',
+    'err.secretEmpty': 'Secret kosong',
+    'err.secretTooShort': 'Secret terlalu pendek (minimal 80 bit)',
+    'err.secretMustBeString': 'Secret harus berupa string',
+    'err.invalidBase32': 'Karakter Base32 tidak valid: {0}',
+    'err.notOtpauth': 'Bukan URI otpauth://',
+    'err.invalidProtocol': 'Protokol tidak valid',
+    'err.onlyTotp': 'Hanya TOTP yang didukung (dapat {0})',
+    'err.missingSecret': 'Secret tidak ada',
+    'err.pasteUri': 'Silakan paste URI otpauth://',
+  },
+};
+
+const LANG_KEY = '2fa-vault.lang.v1';
+let currentLang = (() => {
+  try {
+    const stored = localStorage.getItem(LANG_KEY);
+    if (stored && LOCALES[stored]) return stored;
+  } catch {}
+  const nav = (navigator.language || 'en').toLowerCase();
+  return nav.startsWith('id') ? 'id' : 'en';
+})();
+
+function t(key, ...args) {
+  const dict = LOCALES[currentLang] || LOCALES.en;
+  const tpl = dict[key] || LOCALES.en[key] || key;
+  return args.length
+    ? tpl.replace(/\\{(\\d+)\\}/g, (_, i) => String(args[+i]))
+    : tpl;
+}
+
+function applyTranslations() {
+  document.documentElement.lang = currentLang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+    const spec = el.getAttribute('data-i18n-attr');
+    spec.split(',').forEach(pair => {
+      const [attr, key] = pair.split(':').map(s => s.trim());
+      if (attr && key) el.setAttribute(attr, t(key));
+    });
+  });
+}
+
+function setLang(lang) {
+  if (!LOCALES[lang]) return;
+  currentLang = lang;
+  try { localStorage.setItem(LANG_KEY, lang); } catch {}
+  applyTranslations();
+  render();
+  tick();
+}
 
 // ============================================================
 // Constants & state
@@ -533,13 +740,13 @@ function newId() {
 // Base32 (RFC 4648, no-padding tolerant)
 // ============================================================
 function base32Decode(input) {
-  if (typeof input !== 'string') throw new Error('Secret must be a string');
+  if (typeof input !== 'string') throw new Error(t('err.secretMustBeString'));
   const cleaned = input.replace(/\\s+/g, '').replace(/=+$/, '').toUpperCase();
-  if (!cleaned) throw new Error('Secret is empty');
+  if (!cleaned) throw new Error(t('err.secretEmpty'));
   let bits = '';
   for (const ch of cleaned) {
     const idx = BASE32_ALPHABET.indexOf(ch);
-    if (idx === -1) throw new Error('Invalid Base32 character: ' + ch);
+    if (idx === -1) throw new Error(t('err.invalidBase32', ch));
     bits += idx.toString(2).padStart(5, '0');
   }
   const bytes = [];
@@ -588,11 +795,11 @@ async function generateTOTP(secret, opts = {}) {
 // ============================================================
 function parseOtpauthURI(uri) {
   if (typeof uri !== 'string' || !uri.trim().toLowerCase().startsWith('otpauth://')) {
-    throw new Error('Not an otpauth:// URI');
+    throw new Error(t('err.notOtpauth'));
   }
   const u = new URL(uri.trim());
-  if (u.protocol !== 'otpauth:') throw new Error('Invalid protocol');
-  if (u.host.toLowerCase() !== 'totp') throw new Error('Only TOTP is supported (got ' + u.host + ')');
+  if (u.protocol !== 'otpauth:') throw new Error(t('err.invalidProtocol'));
+  if (u.host.toLowerCase() !== 'totp') throw new Error(t('err.onlyTotp', u.host));
 
   const label = decodeURIComponent(u.pathname.replace(/^\\//, ''));
   let issuer = u.searchParams.get('issuer') || '';
@@ -606,7 +813,7 @@ function parseOtpauthURI(uri) {
   }
 
   const secret = u.searchParams.get('secret');
-  if (!secret) throw new Error('Missing secret');
+  if (!secret) throw new Error(t('err.missingSecret'));
 
   const algoRaw = (u.searchParams.get('algorithm') || 'SHA1').toUpperCase();
   const algorithm =
@@ -616,7 +823,7 @@ function parseOtpauthURI(uri) {
     algoRaw.startsWith('SHA-') ? algoRaw : 'SHA-1';
 
   return {
-    issuer: issuer || 'Unknown',
+    issuer: issuer || t('unknown'),
     account: account || '',
     secret: secret.replace(/\\s+/g, '').toUpperCase(),
     digits: parseInt(u.searchParams.get('digits') || '6', 10),
@@ -679,9 +886,9 @@ function parseShareFragment() {
   if (hash.startsWith('#import=')) {
     try {
       const data = JSON.parse(b64urlDecode(hash.slice('#import='.length)));
-      if (!data.secret) throw new Error('Missing secret');
+      if (!data.secret) throw new Error(t('err.missingSecret'));
       return {
-        issuer: String(data.issuer || 'Unknown'),
+        issuer: String(data.issuer || t('unknown')),
         account: String(data.account || ''),
         secret: String(data.secret).replace(/\\s+/g, '').toUpperCase(),
         digits: parseInt(data.digits || 6, 10),
@@ -690,13 +897,13 @@ function parseShareFragment() {
       };
     } catch (e) {
       console.error('Invalid import fragment:', e);
-      toast('Invalid share link', 'error');
+      toast(t('toast.invalidShareLink'), 'error');
     }
   } else if (hash.startsWith('#otpauth=')) {
     try {
       return parseOtpauthURI(decodeURIComponent(hash.slice('#otpauth='.length)));
     } catch (e) {
-      toast('Invalid otpauth link: ' + e.message, 'error');
+      toast(t('toast.invalidOtpauth', e.message), 'error');
     }
   }
   return null;
@@ -706,10 +913,10 @@ function parseShareFragment() {
 // Validation
 // ============================================================
 function validateSecret(secret) {
-  if (!secret) throw new Error('Secret is required');
+  if (!secret) throw new Error(t('err.secretRequired'));
   // base32Decode throws on invalid input; also fail on empty result.
   const bytes = base32Decode(secret);
-  if (bytes.length < 10) throw new Error('Secret too short (need at least 80 bits)');
+  if (bytes.length < 10) throw new Error(t('err.secretTooShort'));
   return secret.replace(/\\s+/g, '').toUpperCase();
 }
 
@@ -740,7 +947,7 @@ function renderEntry(entry) {
   meta.className = 'meta';
   const issuer = document.createElement('div');
   issuer.className = 'issuer';
-  issuer.textContent = entry.issuer || 'Untitled';
+  issuer.textContent = entry.issuer || t('untitled');
   const account = document.createElement('div');
   account.className = 'account';
   account.textContent = entry.account || '';
@@ -753,8 +960,8 @@ function renderEntry(entry) {
   codeBtn.type = 'button';
   codeBtn.dataset.role = 'code';
   codeBtn.textContent = '------';
-  codeBtn.title = 'Click to copy';
-  codeBtn.setAttribute('aria-label', 'Copy code for ' + (entry.issuer || 'entry'));
+  codeBtn.title = t('code.hint');
+  codeBtn.setAttribute('aria-label', t('aria.copyCode', entry.issuer || t('untitled')));
   codeWrap.appendChild(codeBtn);
 
   const actions = document.createElement('div');
@@ -783,16 +990,31 @@ function renderEntry(entry) {
   const menuBtn = document.createElement('button');
   menuBtn.className = 'menu-btn';
   menuBtn.type = 'button';
-  menuBtn.setAttribute('aria-label', 'More actions');
+  menuBtn.setAttribute('aria-label', t('aria.moreActions'));
   menuBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>';
   const menu = document.createElement('div');
   menu.className = 'menu';
   menu.hidden = true;
-  menu.innerHTML =
-    '<button type="button" data-action="share"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg> Share via link</button>' +
-    '<button type="button" data-action="otpauth"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg> Copy otpauth URI</button>' +
-    '<button type="button" data-action="edit"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Edit</button>' +
-    '<button type="button" data-action="delete" class="danger"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete</button>';
+  // Keep icons inline; labels come from i18n.
+  const ICON_SHARE = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>';
+  const ICON_COPY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>';
+  const ICON_EDIT = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>';
+  const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>';
+  function makeMenuItem(action, icon, labelKey, danger = false) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.dataset.action = action;
+    if (danger) btn.className = 'danger';
+    btn.innerHTML = icon + ' <span></span>';
+    btn.querySelector('span').textContent = t(labelKey);
+    return btn;
+  }
+  menu.append(
+    makeMenuItem('share', ICON_SHARE, 'menu.share'),
+    makeMenuItem('otpauth', ICON_COPY, 'menu.otpauth'),
+    makeMenuItem('edit', ICON_EDIT, 'menu.edit'),
+    makeMenuItem('delete', ICON_TRASH, 'menu.delete', true),
+  );
   menuWrap.append(menuBtn, menu);
 
   actions.append(ringSvg, menuWrap);
@@ -838,7 +1060,7 @@ async function tick() {
         }
         codeEl.classList.remove('error');
       } catch (e) {
-        codeEl.textContent = 'invalid secret';
+        codeEl.textContent = t('code.invalid');
         codeEl.classList.add('error');
         codeCache.delete(entry.id);
       }
@@ -942,7 +1164,7 @@ $tabs.forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
 
 function openAddDialog(entry = null) {
   editingId = entry ? entry.id : null;
-  $addDialogTitle.textContent = entry ? 'Edit 2FA Entry' : 'Add 2FA Entry';
+  $addDialogTitle.textContent = entry ? t('dialog.edit.title') : t('dialog.add.title');
   $issuer.value = entry ? entry.issuer : '';
   $account.value = entry ? entry.account : '';
   $secret.value = entry ? entry.secret : '';
@@ -964,11 +1186,11 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
   try {
     if (activeTab === 'uri') {
       const uri = $uri.value.trim();
-      if (!uri) throw new Error('Paste an otpauth:// URI');
+      if (!uri) throw new Error(t('err.pasteUri'));
       data = parseOtpauthURI(uri);
     } else {
       data = {
-        issuer: $issuer.value.trim() || 'Untitled',
+        issuer: $issuer.value.trim() || t('untitled'),
         account: $account.value.trim(),
         secret: $secret.value.trim(),
         digits: parseInt($digits.value, 10) || 6,
@@ -993,7 +1215,7 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
   closeDialog($addDialog);
   render();
   await tick();
-  toast(editingId ? 'Entry updated' : 'Entry added', 'success');
+  toast(editingId ? t('toast.entryUpdated') : t('toast.entryAdded'), 'success');
 });
 
 // ============================================================
@@ -1009,15 +1231,14 @@ $entries.addEventListener('click', async (e) => {
     const ok = await copyToClipboard(cached.code);
     if (ok) {
       codeBtn.classList.add('copied');
-      const original = codeBtn.textContent;
-      codeBtn.textContent = 'Copied!';
+      codeBtn.textContent = t('code.copied');
       setTimeout(() => {
         codeBtn.classList.remove('copied');
         codeBtn.textContent = formatCode(cached.code);
       }, 1100);
-      toast('Code copied to clipboard', 'success');
+      toast(t('toast.codeCopied'), 'success');
     } else {
-      toast('Could not copy', 'error');
+      toast(t('toast.copyFailed'), 'error');
     }
     return;
   }
@@ -1058,12 +1279,12 @@ async function handleAction(action, entry) {
   if (action === 'edit') {
     openAddDialog(entry);
   } else if (action === 'delete') {
-    if (confirm('Delete "' + (entry.issuer || 'this entry') + '"?')) {
+    if (confirm(t('confirm.delete', entry.issuer || t('untitled')))) {
       entries = entries.filter(e => e.id !== entry.id);
       codeCache.delete(entry.id);
       saveEntries();
       render();
-      toast('Entry deleted');
+      toast(t('toast.entryDeleted'));
     }
   } else if (action === 'share') {
     const link = buildShareLink(entry);
@@ -1073,7 +1294,7 @@ async function handleAction(action, entry) {
   } else if (action === 'otpauth') {
     const uri = buildOtpauthURI(entry);
     const ok = await copyToClipboard(uri);
-    toast(ok ? 'otpauth URI copied' : 'Could not copy', ok ? 'success' : 'error');
+    toast(ok ? t('toast.uriCopied') : t('toast.copyFailed'), ok ? 'success' : 'error');
   }
 }
 
@@ -1081,7 +1302,7 @@ document.getElementById('copyShareBtn').addEventListener('click', async (e) => {
   const link = e.currentTarget.dataset.link;
   if (!link) return;
   const ok = await copyToClipboard(link);
-  toast(ok ? 'Share link copied' : 'Could not copy', ok ? 'success' : 'error');
+  toast(ok ? t('toast.linkCopied') : t('toast.copyFailed'), ok ? 'success' : 'error');
 });
 
 // ============================================================
@@ -1095,13 +1316,13 @@ function showImportDialog(data) {
   card.className = 'preview-card';
   const issuer = document.createElement('div');
   issuer.className = 'issuer';
-  issuer.textContent = data.issuer || 'Untitled';
+  issuer.textContent = data.issuer || t('untitled');
   const account = document.createElement('div');
   account.className = 'account';
   account.textContent = data.account || '';
   const meta = document.createElement('div');
   meta.style.cssText = 'margin-top:.5rem;color:var(--text-faint);font-size:.8rem;';
-  meta.textContent = data.algorithm.replace('-', '') + ' \u00b7 ' + data.digits + ' digits \u00b7 ' + data.period + 's';
+  meta.textContent = t('meta.format', data.algorithm.replace('-', ''), data.digits, data.period);
   card.append(issuer, account, meta);
   preview.appendChild(card);
   openDialog('importDialog');
@@ -1121,13 +1342,13 @@ document.getElementById('importBtn').addEventListener('click', () => {
     e.account === pendingImport.account &&
     e.secret === pendingImport.secret);
   if (dup) {
-    toast('Already in your vault', 'success');
+    toast(t('toast.alreadyInVault'), 'success');
   } else {
     entries.push({ id: newId(), ...pendingImport });
     saveEntries();
     render();
     tick();
-    toast('Entry imported', 'success');
+    toast(t('toast.entryImported'), 'success');
   }
   pendingImport = null;
   closeDialog('importDialog');
@@ -1146,6 +1367,13 @@ document.getElementById('importDialog').addEventListener('close', () => {
 // Bootstrap
 // ============================================================
 function start() {
+  // Apply translations + initialize switcher BEFORE first render so cards
+  // are built with the right language from the start.
+  applyTranslations();
+  const switcher = document.getElementById('langSwitcher');
+  switcher.value = currentLang;
+  switcher.addEventListener('change', e => setLang(e.target.value));
+
   render();
   tick();
   setInterval(tick, 1000);
